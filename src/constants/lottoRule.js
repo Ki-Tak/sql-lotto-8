@@ -1,0 +1,8 @@
+const LOTTO_RULE = {
+  RANDOM_NUMBER_MIN: 1,
+  RANDOM_NUMBER_MAX: 45,
+  LOTTO_LENGTH: 6,
+  LOTTO_UNIT: 1000,
+};
+
+export default LOTTO_RULE;
