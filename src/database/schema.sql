@@ -31,8 +31,7 @@ CREATE TABLE IF NOT EXISTS winning_numbers (
 -- 매칭 결과 테이블 
 CREATE TABLE IF NOT EXISTS match_result (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ticket_id INTEGER NOT NULL UNIQUE,    
-    winning_id INTEGER NOT NULL,          
+    ticket_id INTEGER NOT NULL UNIQUE,         
     rank_1 INTEGER DEFAULT 0,             
     rank_2 INTEGER DEFAULT 0,             
     rank_3 INTEGER DEFAULT 0,             
@@ -42,11 +41,9 @@ CREATE TABLE IF NOT EXISTS match_result (
     return_rate REAL DEFAULT 0.0,        
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ticket_id) REFERENCES lotto_ticket(id) ON DELETE CASCADE,
-    FOREIGN KEY (winning_id) REFERENCES winning_numbers(id) ON DELETE CASCADE
 );
 
 -- 인덱스 생성
 CREATE INDEX IF NOT EXISTS idx_lotto_ticket_id ON lotto(ticket_id);
 CREATE INDEX IF NOT EXISTS idx_winning_numbers_ticket_id ON winning_numbers(ticket_id);
 CREATE INDEX IF NOT EXISTS idx_match_result_ticket_id ON match_result(ticket_id);
-CREATE INDEX IF NOT EXISTS idx_match_result_winning_id ON match_result(winning_id);
