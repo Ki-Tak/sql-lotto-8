@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS winning_numbers (
     ticket_id INTEGER NOT NULL UNIQUE,
     numbers TEXT NOT NULL,
     bonus_number INTEGER NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (ticket_id) REFERENCES lotto_ticket(id) ON DELETE CASCADE
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS match_result (
     total_prize INTEGER DEFAULT 0,        
     return_rate REAL DEFAULT 0.0,        
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (ticket_id) REFERENCES lotto_ticket(id) ON DELETE CASCADE,
+    FOREIGN KEY (ticket_id) REFERENCES lotto_ticket(id) ON DELETE CASCADE
 );
 
 -- 인덱스 생성
