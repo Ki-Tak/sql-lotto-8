@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@woowacourse/mission-utils": "^2.2.0",
-    "sqlite3": "^5.1.7"
+    "better-sqlite3": "^12.4.1"
   },
   "jest": {
     "transform": {
