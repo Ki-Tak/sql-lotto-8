@@ -92,5 +92,16 @@ class DatabaseService {
         returnRate
       );
   }
+
+  deleteTicket(ticketId) {
+    const sql = "DELETE FROM lotto_ticket WHERE id = ?";
+    this.#db.prepare(sql).run(ticketId);
+  }
+
+  close() {
+    if (this.#db) {
+      this.#db.close();
+    }
+  }
 }
 export default DatabaseService;
