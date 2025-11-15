@@ -58,6 +58,26 @@ class DatabaseService {
     this.#db.prepare(LOTTO_TICKET_QUERY.DELETE).run(ticketId);
   }
 
+  getAllTickets() {
+    return this.#db.prepare(LOTTO_TICKET_QUERY.SELETE_ALL).all();
+  }
+
+  getTicketDetail(ticketId) {
+    return this.#db.prepare(LOTTO_TICKET_QUERY.SELETE_DETAIL).get(ticketId);
+  }
+
+  getLottoNumbers(ticketId) {
+    return this.#db.prepare(LOTTO_QUERY.SELECT_NUMBERS).all(ticketId);
+  }
+
+  getWinningNumbers(ticketId) {
+    return this.#db.prepare(WINNING_NUMBERS_QUERY.SELECT_DETAIL).get(ticketId);
+  }
+
+  getMatchResult(ticketId) {
+    return this.#db.prepare(MATCH_RESULT_QUERY.SELECT_DETAIL).get(ticketId);
+  }
+
   close() {
     if (this.#db) {
       this.#db.close();
