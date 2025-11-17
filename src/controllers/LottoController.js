@@ -53,6 +53,60 @@ class LottoController {
     throw new Error(ERROR_MESSAGE.INVALID_MENU_NUMBER);
   }
 
+  // 1번 메뉴
+  async #handlePurchaseLotto() {
+    const amount = await InputView.inputPurchaseAmount();
+    const ticket = new LottoTicket(amount);
+    const ticketId = this.#dbService.insertLottoTicket(
+      parseInt(amount),
+      ticket.getTicketCount()
+    );
+    const lottoNumbers = ticket.getTicket().map((lotto) => lotto.getNumbers());
+    this.#dbService.insertLotto(ticketId, lottoNumbers);
+    OutputView.printLottoCount(ticket.getTicketCount());
+    OutputView.printLottoNumbers(lottoNumbers);
+    await this.#processWinningAnalysis(ticketId, ticket, amount);
+  }
+
+  async #processWinningAnalysis(ticketId, ticket, amount) {
+    const numbers = await this.#inputWinningNumbers();
+    const bonus = await this.#inputBonusNumber();
+    const winning = new WinningNumbers(numbers, bonus);
+    this.#dbService.insertWinningNumbers(ticketId, numbers, bonus);
+    this.#analyzeAndSaveResult(ticketId, ticket, winning, amount);
+  }
+
+  async #inputWinningNumbers() {
+    const winningInput = await InputView.inputWinningNumbers();
+    return winningInput.split(",").map((n) => parseInt(n.trim()));
+  }
+
+  async #inputBonusNumber() {
+    const bonusInput = await InputView.inputBonusNumber();
+    return parseInt(bonusInput.trim());
+  }
+
+  #analyzeAndSaveResult(ticketId, ticket, winning, amount) {
+    const result = this.#gameService.analyzeTicket(ticket.getTicket(), winning);
+    const returnRate = this.#gameService.calculateReturnRate(
+      result.totalPrize,
+      parseInt(amount)
+    );
+    this.#dbService.insertMatchResult(
+      ticketId,
+      result.rankCount,
+      result.totalPrize,
+      returnRate
+    );
+    OutputView.printWinningResult(result.rankCount, returnRate);
+  }
+
+  // 2번 메뉴
+  async #handleSelectTicket() {}
+
+  // 3번 메뉴
+  async #handleDeleteTicket() {}
+
   #handleExit() {
     OutputView.printExitMessage();
     this.#isRunning = false;
@@ -63,9 +117,5 @@ class LottoController {
       this.#dbService.close();
     }
   }
-
-  async #handlePurchaseLotto() {}
-  async #handleSelectTicket() {}
-  async #handleDeleteTicket() {}
 }
 export default LottoController;

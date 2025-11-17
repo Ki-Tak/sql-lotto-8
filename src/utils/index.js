@@ -1,2 +1,2 @@
-import getRandomNumber from "./getRandomNumber";
+import getRandomNumber from "./getRandomNumber.js";
 export { getRandomNumber };

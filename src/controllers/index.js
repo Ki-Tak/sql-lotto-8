@@ -1,2 +1,2 @@
-import LottoController from "./LottoController";
+import LottoController from "./LottoController.js";
 export { LottoController };

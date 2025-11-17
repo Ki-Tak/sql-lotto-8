@@ -5,8 +5,8 @@ class LottoGameService {
     const rankCount = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
 
     lottoNumbers.forEach((lotto) => {
-      const matchCount = winningNumbers.countMatch(lotto);
-      const isBonusMatch = winningNumbers.isBonusMatch(lotto);
+      const matchCount = winningNumbers.countMatch(lotto.getNumbers());
+      const isBonusMatch = winningNumbers.hasBonusMatch(lotto.getNumbers());
       this.#updateRank(rankCount, matchCount, isBonusMatch);
     });
 

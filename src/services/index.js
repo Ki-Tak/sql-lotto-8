@@ -1,3 +1,3 @@
-import DatabaseService from "./DatabaseService";
-import LottoGameService from "./LottoGameService";
+import DatabaseService from "./DatabaseService.js";
+import LottoGameService from "./LottoGameService.js";
 export { DatabaseService, LottoGameService };

@@ -14,15 +14,20 @@ class OutputView {
     MissionUtils.Console.print(INTRO_MESSAGE.LOTTO_COUNT(count));
   }
 
-  // TODO: 로또 번호 배열 출력하기
+  static printLottoNumbers(lottoNumbers) {
+    lottoNumbers.forEach((lotto) => {
+      MissionUtils.Console.print(`[${lotto.join(", ")}]`);
+    });
+  }
 
-  static printWinningResult(rank) {
+  static printWinningResult(rankCount, rate) {
     MissionUtils.Console.print(INTRO_MESSAGE.WINNING_TITLE);
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIFTH(rank.fifth));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FOURTH(rank.fourth));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_THIRD(rank.third));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_SECOND(rank.second));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIRST(rank.first));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIFTH(rankCount[5]));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FOURTH(rankCount[4]));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_THIRD(rankCount[3]));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_SECOND(rankCount[2]));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIRST(rankCount[1]));
+    MissionUtils.Console.print(INTRO_MESSAGE.RETURN_ON_INVESTMENT(rate));
   }
 
   static printStoreTickets(tickets) {
