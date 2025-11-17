@@ -1,7 +1,6 @@
-const createTitleTemplate = (content) => `=== ${content} ===\n`;
+const createTitleTemplate = (content) => `=== ${content} ===`;
 
 const INTRO_MESSAGE = {
-  TITLE_TEMPLATE: (content) => `=== ${content} ===\n`,
   MENU_TITLE: createTitleTemplate("로또 게임"),
   PURCHASE_MENU: `1. 로또 구매`,
   CHECK_MENU: `2. 로또 조회`,
