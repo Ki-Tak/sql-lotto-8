@@ -3,9 +3,9 @@ const createTitleTemplate = (content) => `=== ${content} ===\n`;
 const INTRO_MESSAGE = {
   TITLE_TEMPLATE: (content) => `=== ${content} ===\n`,
   MENU_TITLE: createTitleTemplate("로또 게임"),
-  PURCHASE_MENU: `1. 로또 구매\n`,
-  CHECK_MENU: `2. 로또 조회\n`,
-  DELETE_MENU: `3. 로또 삭제\n`,
+  PURCHASE_MENU: `1. 로또 구매`,
+  CHECK_MENU: `2. 로또 조회`,
+  DELETE_MENU: `3. 로또 삭제`,
   EXIT_MENU: `4. 종료\n`,
   LOTTO_COUNT: (count) => `\n로또 번호 (총 ${count}개):\n`,
   WINNING_TITLE: "\n당첨 통계\n---",

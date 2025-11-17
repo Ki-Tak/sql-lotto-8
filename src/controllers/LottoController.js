@@ -91,25 +91,29 @@ class LottoController {
 
   async #processWinningAnalysis(ticketId, ticket, amount) {
     const winning = new WinningNumbers();
-    const numbers = await this.#inputWinningNumbers();
-    winning.setWinningNumbers(numbers);
-    const bonus = await this.#inputBonusNumber();
-    winning.setBonusNumber(bonus);
+    const numbers = await this.#inputWinningNumbers(winning);
+    const bonus = await this.#inputBonusNumber(winning);
     this.#dbService.insertWinningNumbers(ticketId, numbers, bonus);
     this.#analyzeAndSaveResult(ticketId, ticket, winning, amount);
   }
 
-  async #inputWinningNumbers() {
+  async #inputWinningNumbers(winning) {
     return await this.#getValidInput(async () => {
       const winningInput = await InputView.inputWinningNumbers();
-      return winningInput.split(",").map((n) => parseInt(n.trim()));
+      const winningNumbers = winningInput
+        .split(",")
+        .map((n) => parseInt(n.trim()));
+      winning.setWinningNumbers(winningNumbers);
+      return winningNumbers;
     });
   }
 
-  async #inputBonusNumber() {
+  async #inputBonusNumber(winning) {
     return await this.#getValidInput(async () => {
       const bonusInput = await InputView.inputBonusNumber();
-      return parseInt(bonusInput.trim());
+      const bonusNumber = parseInt(bonusInput.trim());
+      winning.setBonusNumber(bonusNumber);
+      return bonusNumber;
     });
   }
 

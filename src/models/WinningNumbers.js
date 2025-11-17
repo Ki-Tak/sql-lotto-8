@@ -35,6 +35,9 @@ class WinningNumbers {
     if (numberArray.some((num) => String(Number(num)) !== String(num))) {
       throw new Error(ERROR_MESSAGE.INVALID_WINNING_NUMBERS_TYPE);
     }
+    if (numberArray.some((num) => typeof num !== "number" || isNaN(num))) {
+      throw new Error(ERROR_MESSAGE.INVALID_WINNING_NUMBERS_TYPE);
+    }
   }
 
   #validateLength(numberArray) {
@@ -63,6 +66,9 @@ class WinningNumbers {
 
   #validateBonusNumberType(bonusNumber) {
     if (String(Number(bonusNumber)) !== String(bonusNumber)) {
+      throw new Error(ERROR_MESSAGE.INVALID_BONUS_NUMBER_TYPE);
+    }
+    if (typeof bonusNumber !== "number" || isNaN(bonusNumber)) {
       throw new Error(ERROR_MESSAGE.INVALID_BONUS_NUMBER_TYPE);
     }
   }
