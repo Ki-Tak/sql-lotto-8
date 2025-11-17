@@ -74,27 +74,34 @@ class LottoController {
 
   // 1번 메뉴
   async #handlePurchaseLotto() {
-    const amount = await this.#getValidInput(async () => {
-      return await InputView.inputPurchaseAmount();
-    });
+    const amount = await this.#inputPurchaseAmount();
     const ticket = new LottoTicket(amount);
-    const ticketId = this.#dbService.insertLottoTicket(
-      parseInt(amount),
-      ticket.getTicketCount()
-    );
     const lottoNumbers = ticket.getTicket().map((lotto) => lotto.getNumbers());
-    this.#dbService.insertLotto(ticketId, lottoNumbers);
+
     OutputView.printLottoCount(ticket.getTicketCount());
     OutputView.printLottoNumbers(lottoNumbers);
-    await this.#processWinningAnalysis(ticketId, ticket, amount);
+
+    const winning = await this.#inputWinningInfo();
+
+    await this.#saveTicketWithTransaction(
+      amount,
+      ticket,
+      lottoNumbers,
+      winning
+    );
   }
 
-  async #processWinningAnalysis(ticketId, ticket, amount) {
+  async #inputPurchaseAmount() {
+    return await this.#getValidInput(async () => {
+      return await InputView.inputPurchaseAmount();
+    });
+  }
+
+  async #inputWinningInfo() {
     const winning = new WinningNumbers();
     const numbers = await this.#inputWinningNumbers(winning);
     const bonus = await this.#inputBonusNumber(winning);
-    this.#dbService.insertWinningNumbers(ticketId, numbers, bonus);
-    this.#analyzeAndSaveResult(ticketId, ticket, winning, amount);
+    return { winning, numbers, bonus };
   }
 
   async #inputWinningNumbers(winning) {
@@ -117,8 +124,34 @@ class LottoController {
     });
   }
 
-  #analyzeAndSaveResult(ticketId, ticket, winning, amount) {
-    const result = this.#gameService.analyzeTicket(ticket.getTicket(), winning);
+  async #saveTicketWithTransaction(amount, ticket, lottoNumbers, winningInfo) {
+    try {
+      this.#dbService.beginTransaction();
+
+      const ticketId = this.#dbService.insertLottoTicket(
+        parseInt(amount),
+        ticket.getTicketCount()
+      );
+      this.#dbService.insertLotto(ticketId, lottoNumbers);
+      this.#dbService.insertWinningNumbers(
+        ticketId,
+        winningInfo.numbers,
+        winningInfo.bonus
+      );
+      this.#analyzeAndSave(ticketId, ticket, winningInfo, amount);
+
+      this.#dbService.commit();
+    } catch (error) {
+      this.#dbService.rollback();
+      throw new Error(ERROR_MESSAGE.INVALID_TRANSACTION_EXIT);
+    }
+  }
+
+  #analyzeAndSave(ticketId, ticket, winningInfo, amount) {
+    const result = this.#gameService.analyzeTicket(
+      ticket.getTicket(),
+      winningInfo.winning
+    );
     const returnRate = this.#gameService.calculateReturnRate(
       result.totalPrize,
       parseInt(amount)

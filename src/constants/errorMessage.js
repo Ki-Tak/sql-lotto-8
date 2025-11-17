@@ -30,6 +30,10 @@ const ERROR_MESSAGE = {
   INVALID_MENU_NUMBER: "[ERROR] 메뉴는 1번부터 4번까지 존재합니다.",
   EMPTY_TICKET: "[ERROR] 저장한 티켓이 존재하지 않습니다.",
   INVALID_TICKET_NUMBER: "[ERROR] 유효하지 않는 티켓 번호입니다.",
+
+  // 트렌젝션 관련
+  INVALID_TRANSACTION_EXIT:
+    "[ERROR] 데이터 저장이 정상적으로 종료되지 않았습니다.",
 };
 
 export default ERROR_MESSAGE;
