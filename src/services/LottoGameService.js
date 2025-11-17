@@ -15,11 +15,11 @@ class LottoGameService {
   }
 
   #updateRank(rankCount, matchCount, isBonusMatch) {
-    if (matchCount === 6) rankCount++;
-    if (matchCount === 5 && isBonusMatch) rankCount++;
-    if (matchCount === 5) rankCount++;
-    if (matchCount === 4) rankCount++;
-    if (matchCount === 3) rankCount++;
+    if (matchCount === 6) rankCount[1]++;
+    if (matchCount === 5 && isBonusMatch) rankCount[2]++;
+    if (matchCount === 5) rankCount[3]++;
+    if (matchCount === 4) rankCount[4]++;
+    if (matchCount === 3) rankCount[5]++;
   }
 
   #calculateTotalPrize(rankCount) {

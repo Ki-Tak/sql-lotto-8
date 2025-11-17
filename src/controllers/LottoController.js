@@ -65,6 +65,17 @@ class LottoController {
     throw new Error(ERROR_MESSAGE.INVALID_MENU_NUMBER);
   }
 
+  async #selectTicketIndex(length, inputFunction) {
+    return await this.#getValidInput(async () => {
+      const selection = await inputFunction();
+      const index = parseInt(selection.trim()) - 1;
+      if (index < 0 || index >= length) {
+        throw new Error(ERROR_MESSAGE.INVALID_TICKET_NUMBER);
+      }
+      return index;
+    });
+  }
+
   // 1번 메뉴
   async #handlePurchaseLotto() {
     const amount = await this.#getValidInput(async () => {
@@ -135,24 +146,12 @@ class LottoController {
       throw new Error(ERROR_MESSAGE.EMPTY_TICKET);
     }
     OutputView.printStoreTickets(tickets);
-    const index = await this.#selectValidTicket(tickets.length);
+    const index = await this.#selectTicketIndex(
+      tickets.length,
+      InputView.inputSelectTicket
+    );
     const ticketId = tickets[index].id;
     this.#printTicketDetail(ticketId);
-  }
-
-  async #selectValidTicket(length) {
-    while (true) {
-      try {
-        const selection = await InputView.inputSelectTicket();
-        const index = parseInt(selection.trim()) - 1;
-        if (index < 0 || index >= length) {
-          throw new Error(ERROR_MESSAGE.INVALID_TICKET_NUMBER);
-        }
-        return index;
-      } catch (error) {
-        OutputView.printError(error.message);
-      }
-    }
   }
 
   #printTicketDetail(ticketId) {
@@ -177,8 +176,22 @@ class LottoController {
   }
 
   // 3번 메뉴
-  async #handleDeleteTicket() {}
+  async #handleDeleteTicket() {
+    const tickets = this.#dbService.selectAllTickets();
+    if (tickets.length === 0) {
+      throw new Error(ERROR_MESSAGE.EMPTY_TICKET);
+    }
+    OutputView.printStoreTickets(tickets);
+    const index = await this.#selectTicketIndex(
+      tickets.length,
+      InputView.inputSelectDeleteTicket
+    );
+    const ticketId = tickets[index].id;
+    this.#dbService.deleteLottoTicket(ticketId);
+    OutputView.printDeleteTicket(ticketId);
+  }
 
+  // 4번 메뉴
   #handleExit() {
     OutputView.printExitMessage();
     this.#isRunning = false;
