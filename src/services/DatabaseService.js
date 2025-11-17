@@ -4,6 +4,7 @@ import {
   LOTTO_QUERY,
   WINNING_NUMBERS_QUERY,
   MATCH_RESULT_QUERY,
+  TRANSACTION_QUERY,
 } from "../database/queries/index.js";
 import { INIT_TABLE } from "../database/schema/index.js";
 
@@ -25,6 +26,30 @@ class DatabaseService {
 
   #initializeTables() {
     this.#db.exec(INIT_TABLE);
+  }
+
+  beginTransaction() {
+    this.#db.prepare(TRANSACTION_QUERY.BEGIN).run();
+  }
+
+  commit() {
+    this.#db.prepare(TRANSACTION_QUERY.COMMIT).run();
+  }
+
+  rollback() {
+    this.#db.prepare(TRANSACTION_QUERY.ROLLBACK).run();
+  }
+
+  executeInTransaction(callback) {
+    try {
+      this.beginTransaction();
+      const result = callback();
+      this.commit();
+      return result;
+    } catch (error) {
+      this.rollback();
+      throw error;
+    }
   }
 
   insertLottoTicket(amount, ticketCount) {
