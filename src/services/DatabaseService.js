@@ -10,8 +10,15 @@ import { INIT_TABLE } from "../database/schema/index.js";
 class DatabaseService {
   #db;
 
-  constructor(dbPath = "lotto.db") {
-    this.#db = new Database(dbPath);
+  constructor(options = {}) {
+    const { path = "lotto.db", memory = false } = options;
+
+    if (memory) {
+      this.#db = new Database(":memory:");
+    } else {
+      this.#db = new Database(path);
+    }
+
     this.#db.pragma("journal_mode = WAL"); // WAL 프라그마 활성화
     this.#initializeTables();
   }
@@ -58,23 +65,23 @@ class DatabaseService {
     this.#db.prepare(LOTTO_TICKET_QUERY.DELETE).run(ticketId);
   }
 
-  getAllTickets() {
+  selectAllTickets() {
     return this.#db.prepare(LOTTO_TICKET_QUERY.SELETE_ALL).all();
   }
 
-  getTicketDetail(ticketId) {
+  selectTicketDetail(ticketId) {
     return this.#db.prepare(LOTTO_TICKET_QUERY.SELETE_DETAIL).get(ticketId);
   }
 
-  getLottoNumbers(ticketId) {
+  selectLottoNumbers(ticketId) {
     return this.#db.prepare(LOTTO_QUERY.SELECT_NUMBERS).all(ticketId);
   }
 
-  getWinningNumbers(ticketId) {
+  selectWinningNumbers(ticketId) {
     return this.#db.prepare(WINNING_NUMBERS_QUERY.SELECT_DETAIL).get(ticketId);
   }
 
-  getMatchResult(ticketId) {
+  selectMatchResult(ticketId) {
     return this.#db.prepare(MATCH_RESULT_QUERY.SELECT_DETAIL).get(ticketId);
   }
 
