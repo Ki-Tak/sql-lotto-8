@@ -1,2 +1,3 @@
 import DatabaseService from "./DatabaseService";
-export { DatabaseService };
+import LottoGameService from "./LottoGameService";
+export { DatabaseService, LottoGameService };
