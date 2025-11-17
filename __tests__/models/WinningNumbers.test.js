@@ -1,5 +1,5 @@
-import { Lotto, WinningNumbers } from "../src/models";
-import { ERROR_MESSAGE } from "../src/constants";
+import { Lotto, WinningNumbers } from "../../src/models";
+import { ERROR_MESSAGE } from "../../src/constants";
 
 const testValidWinningNumbers = (numbers, bonusNumber) => {
   expect(() => {

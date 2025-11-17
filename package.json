@@ -21,7 +21,10 @@
   "jest": {
     "transform": {
       "\\.js$": "babel-jest"
-    }
+    },
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ]
   },
   "babel": {
     "presets": [
