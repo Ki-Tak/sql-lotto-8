@@ -25,6 +25,9 @@ const ERROR_MESSAGE = {
   INVALID_BONUS_NUMBER_TYPE: "[ERROR] 보너스 번호는 숫자여야 합니다.",
   ORDER_WINNING_BEFORE_BONUS:
     "[ERROR] 보너스 번호는 당첨 번호 입력 후에만 입력할 수 있습니다.",
+
+  // 메뉴 입력 관련
+  INVALID_MENU_NUMBER: "[ERROR] 메뉴는 1번부터 4번까지 존재합니다.",
 };
 
 export default ERROR_MESSAGE;
