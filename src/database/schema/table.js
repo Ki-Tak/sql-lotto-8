@@ -4,7 +4,7 @@ const CREATE_TABLE = {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       amount INTEGER NOT NULL,
       ticket_count INTEGER NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at DATETIME DEFAULT (datetime('now', '+9 hours'))
     )
   `,
 
@@ -13,7 +13,7 @@ const CREATE_TABLE = {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ticket_id INTEGER NOT NULL,
       numbers TEXT NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at DATETIME DEFAULT (datetime('now', '+9 hours')),
       FOREIGN KEY (ticket_id) REFERENCES lotto_ticket(id) ON DELETE CASCADE
     )
   `,
@@ -24,7 +24,7 @@ const CREATE_TABLE = {
       ticket_id INTEGER NOT NULL UNIQUE,
       numbers TEXT NOT NULL,
       bonus_number INTEGER NOT NULL,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at DATETIME DEFAULT (datetime('now', '+9 hours')),
       FOREIGN KEY (ticket_id) REFERENCES lotto_ticket(id) ON DELETE CASCADE
     )
   `,
@@ -40,7 +40,7 @@ const CREATE_TABLE = {
       rank_5 INTEGER DEFAULT 0,
       total_prize INTEGER DEFAULT 0,
       return_rate REAL DEFAULT 0.0,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      created_at DATETIME DEFAULT (datetime('now', '+9 hours')),
       FOREIGN KEY (ticket_id) REFERENCES lotto_ticket(id) ON DELETE CASCADE
     )
   `,

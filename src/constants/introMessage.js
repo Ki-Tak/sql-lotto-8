@@ -21,7 +21,7 @@ const INTRO_MESSAGE = {
     `${index}. 티켓 #${ticket_id} (${amount}원, ${count}개)`,
   TICKET_DETAIL_TITLE: createTitleTemplate("티켓 상세 정보"),
   TICKET_DETAIL_AMOUNT: (amount) => `구매 금액: ${amount}원`,
-  TICKET_DETAIL_DATE: (date) => `구매 날짜: ${date}`,
+  TICKET_DETAIL_DATE: (date) => `구매 날짜: ${date}\n`,
   TICKET_DETAIL_WINNING: (winningNumbers) => `\n당첨 번호: ${winningNumbers}`,
   TICKET_DETAIL_BONUS: (bonusNumber) => `보너스 번호: ${bonusNumber}`,
   DELETE_TICKET: (ticket_id) => `티켓 #${ticket_id}이(가) 삭제되었습니다.`,

@@ -14,15 +14,27 @@ class LottoController {
     this.#isRunning = true;
   }
 
+  async #getValidInput(promptFunction) {
+    while (true) {
+      try {
+        return await promptFunction();
+      } catch (error) {
+        OutputView.printError(error.message);
+      }
+    }
+  }
+
   async run() {
     try {
       while (this.#isRunning) {
-        OutputView.printMainMenu();
-        const menu = await InputView.inputSelectMenu();
-        await this.#handleMenu(menu.trim());
+        await this.#getValidInput(async () => {
+          OutputView.printMainMenu();
+          const menu = await InputView.inputSelectMenu();
+          await this.#handleMenu(menu.trim());
+        });
       }
     } catch (error) {
-      OutputView.printExitMessage(error.message);
+      OutputView.printError(error.message);
       throw error;
     } finally {
       this.#cleanup();
@@ -55,7 +67,9 @@ class LottoController {
 
   // 1번 메뉴
   async #handlePurchaseLotto() {
-    const amount = await InputView.inputPurchaseAmount();
+    const amount = await this.#getValidInput(async () => {
+      return await InputView.inputPurchaseAmount();
+    });
     const ticket = new LottoTicket(amount);
     const ticketId = this.#dbService.insertLottoTicket(
       parseInt(amount),
@@ -69,21 +83,27 @@ class LottoController {
   }
 
   async #processWinningAnalysis(ticketId, ticket, amount) {
+    const winning = new WinningNumbers();
     const numbers = await this.#inputWinningNumbers();
+    winning.setWinningNumbers(numbers);
     const bonus = await this.#inputBonusNumber();
-    const winning = new WinningNumbers(numbers, bonus);
+    winning.setBonusNumber(bonus);
     this.#dbService.insertWinningNumbers(ticketId, numbers, bonus);
     this.#analyzeAndSaveResult(ticketId, ticket, winning, amount);
   }
 
   async #inputWinningNumbers() {
-    const winningInput = await InputView.inputWinningNumbers();
-    return winningInput.split(",").map((n) => parseInt(n.trim()));
+    return await this.#getValidInput(async () => {
+      const winningInput = await InputView.inputWinningNumbers();
+      return winningInput.split(",").map((n) => parseInt(n.trim()));
+    });
   }
 
   async #inputBonusNumber() {
-    const bonusInput = await InputView.inputBonusNumber();
-    return parseInt(bonusInput.trim());
+    return await this.#getValidInput(async () => {
+      const bonusInput = await InputView.inputBonusNumber();
+      return parseInt(bonusInput.trim());
+    });
   }
 
   #analyzeAndSaveResult(ticketId, ticket, winning, amount) {
@@ -98,11 +118,63 @@ class LottoController {
       result.totalPrize,
       returnRate
     );
-    OutputView.printWinningResult(result.rankCount, returnRate);
+    OutputView.printWinningResult(
+      result.rankCount[1],
+      result.rankCount[2],
+      result.rankCount[3],
+      result.rankCount[4],
+      result.rankCount[5],
+      returnRate
+    );
   }
 
   // 2번 메뉴
-  async #handleSelectTicket() {}
+  async #handleSelectTicket() {
+    const tickets = this.#dbService.selectAllTickets();
+    if (tickets.length === 0) {
+      throw new Error(ERROR_MESSAGE.EMPTY_TICKET);
+    }
+    OutputView.printStoreTickets(tickets);
+    const index = await this.#selectValidTicket(tickets.length);
+    const ticketId = tickets[index].id;
+    this.#printTicketDetail(ticketId);
+  }
+
+  async #selectValidTicket(length) {
+    while (true) {
+      try {
+        const selection = await InputView.inputSelectTicket();
+        const index = parseInt(selection.trim()) - 1;
+        if (index < 0 || index >= length) {
+          throw new Error(ERROR_MESSAGE.INVALID_TICKET_NUMBER);
+        }
+        return index;
+      } catch (error) {
+        OutputView.printError(error.message);
+      }
+    }
+  }
+
+  #printTicketDetail(ticketId) {
+    const ticket = this.#dbService.selectTicketDetail(ticketId);
+    const lottoNumbers = this.#dbService.selectLottoNumbers(ticketId);
+    const winning = this.#dbService.selectWinningNumbers(ticketId);
+    const matchResult = this.#dbService.selectMatchResult(ticketId);
+    OutputView.printTicketInformation(
+      ticket,
+      lottoNumbers.map((lotto) => JSON.parse(lotto.numbers)),
+      JSON.parse(winning.numbers),
+      winning.bonus_number
+    );
+    OutputView.printWinningResult(
+      matchResult.rank_1,
+      matchResult.rank_2,
+      matchResult.rank_3,
+      matchResult.rank_4,
+      matchResult.rank_5,
+      matchResult.return_rate
+    );
+  }
 
   // 3번 메뉴
   async #handleDeleteTicket() {}

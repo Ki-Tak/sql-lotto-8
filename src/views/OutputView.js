@@ -20,14 +20,15 @@ class OutputView {
     });
   }
 
-  static printWinningResult(rankCount, rate) {
+  static printWinningResult(rank_1, rank_2, rank_3, rank_4, rank_5, rate) {
     MissionUtils.Console.print(INTRO_MESSAGE.WINNING_TITLE);
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIFTH(rankCount[5]));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FOURTH(rankCount[4]));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_THIRD(rankCount[3]));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_SECOND(rankCount[2]));
-    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIRST(rankCount[1]));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIFTH(rank_5));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FOURTH(rank_4));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_THIRD(rank_3));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_SECOND(rank_2));
+    MissionUtils.Console.print(INTRO_MESSAGE.RANK_FIRST(rank_1));
     MissionUtils.Console.print(INTRO_MESSAGE.RETURN_ON_INVESTMENT(rate));
+    MissionUtils.Console.print("\n");
   }
 
   static printStoreTickets(tickets) {
@@ -42,13 +43,23 @@ class OutputView {
         )
       );
     });
+    MissionUtils.Console.print("\n");
   }
 
-  static printTicketDetail(amount, date, winningNumbers, bonusNumber) {
+  static printTicketInformation(
+    ticket,
+    lottoNumbers,
+    winningNumbers,
+    bonusNumber
+  ) {
     MissionUtils.Console.print(INTRO_MESSAGE.TICKET_DETAIL_TITLE);
-    MissionUtils.Console.print(INTRO_MESSAGE.TICKET_DETAIL_AMOUNT(amount));
-    MissionUtils.Console.print(INTRO_MESSAGE.TICKET_DETAIL_DATE(date));
-    // TODO: 로또 번호 배열 출력하기
+    MissionUtils.Console.print(
+      INTRO_MESSAGE.TICKET_DETAIL_AMOUNT(ticket.amount)
+    );
+    MissionUtils.Console.print(
+      INTRO_MESSAGE.TICKET_DETAIL_DATE(ticket.created_at)
+    );
+    this.printLottoNumbers(lottoNumbers);
     MissionUtils.Console.print(
       INTRO_MESSAGE.TICKET_DETAIL_WINNING(winningNumbers)
     );
@@ -61,6 +72,10 @@ class OutputView {
 
   static printExitMessage() {
     MissionUtils.Console.print(INTRO_MESSAGE.EXIT_PROGRAM);
+  }
+
+  static printError(errorMessage) {
+    MissionUtils.Console.print(errorMessage);
   }
 }
 
