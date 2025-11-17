@@ -46,22 +46,18 @@ class LottoController {
       await this.#handlePurchaseLotto();
       return;
     }
-
     if (menu === "2") {
       await this.#handleSelectTicket();
       return;
     }
-
     if (menu === "3") {
       await this.#handleDeleteTicket();
       return;
     }
-
     if (menu === "4") {
       this.#handleExit();
       return;
     }
-
     throw new Error(ERROR_MESSAGE.INVALID_MENU_NUMBER);
   }
 
