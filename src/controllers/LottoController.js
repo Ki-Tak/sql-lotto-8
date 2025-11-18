@@ -83,7 +83,7 @@ class LottoController {
 
     const winning = await this.#inputWinningInfo();
 
-    await this.#saveTicketWithTransaction(
+    await this.#insertDataWithTransaction(
       amount,
       ticket,
       lottoNumbers,
@@ -124,10 +124,8 @@ class LottoController {
     });
   }
 
-  async #saveTicketWithTransaction(amount, ticket, lottoNumbers, winningInfo) {
-    try {
-      this.#dbService.beginTransaction();
-
+  async #insertDataWithTransaction(amount, ticket, lottoNumbers, winningInfo) {
+    this.#dbService.executeInTransaction(() => {
       const ticketId = this.#dbService.insertLottoTicket(
         parseInt(amount),
         ticket.getTicketCount()
@@ -138,16 +136,11 @@ class LottoController {
         winningInfo.numbers,
         winningInfo.bonus
       );
-      this.#analyzeAndSave(ticketId, ticket, winningInfo, amount);
-
-      this.#dbService.commit();
-    } catch (error) {
-      this.#dbService.rollback();
-      throw new Error(ERROR_MESSAGE.INVALID_TRANSACTION_EXIT);
-    }
+      this.#analyzeAndInsert(ticketId, ticket, winningInfo, amount);
+    });
   }
 
-  #analyzeAndSave(ticketId, ticket, winningInfo, amount) {
+  #analyzeAndInsert(ticketId, ticket, winningInfo, amount) {
     const result = this.#gameService.analyzeTicket(
       ticket.getTicket(),
       winningInfo.winning

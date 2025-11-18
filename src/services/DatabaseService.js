@@ -48,7 +48,7 @@ class DatabaseService {
       return result;
     } catch (error) {
       this.rollback();
-      throw error;
+      throw new Error(ERROR_MESSAGE.INVALID_TRANSACTION_EXIT);
     }
   }
 
